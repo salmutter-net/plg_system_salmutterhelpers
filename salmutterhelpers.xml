@@ -4,7 +4,7 @@
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<description>Project-level Composer autoloader bootstrap for SalmutterNet helpers.</description>
 	<namespace path="src">SalmutterNet\Plugin\System\Salmutterhelpers</namespace>
 	<files>

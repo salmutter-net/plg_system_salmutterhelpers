@@ -32,10 +32,31 @@ final class Salmutterhelpers extends CMSPlugin implements SubscriberInterface
             return;
         }
 
-        $autoload = JPATH_ROOT . '/../vendor/autoload.php';
+        $localHelpersComposerAutoload = JPATH_ROOT . '/local-helpers/vendor/autoload.php';
+        if (is_file($localHelpersComposerAutoload)) {
+            require_once $localHelpersComposerAutoload;
+            $loaded = true;
+            return;
+        }
 
-        if (is_file($autoload)) {
-            require_once $autoload;
+        $localHelpersSrc = JPATH_ROOT . '/local-helpers/src';
+        if (is_dir($localHelpersSrc)) {
+            $prefix = 'Project\\';
+            $baseDir = rtrim($localHelpersSrc, '/\\') . DIRECTORY_SEPARATOR;
+
+            spl_autoload_register(static function (string $class) use ($prefix, $baseDir): void {
+                $len = strlen($prefix);
+                if (strncmp($prefix, $class, $len) !== 0) {
+                    return;
+                }
+
+                $relativeClass = substr($class, $len);
+                $file = $baseDir . str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php';
+
+                if (is_file($file)) {
+                    require $file;
+                }
+            });
         }
 
         $loaded = true;
