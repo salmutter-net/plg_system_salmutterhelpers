@@ -4,11 +4,32 @@
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.1.1</version>
-	<description>Project-level Composer autoloader bootstrap for SalmutterNet helpers.</description>
+	<version>0.2.0</version>
+	<description><![CDATA[System plugin that provides the shared helper baseline (namespace: SalmutterNet\JoomlaHelpers) and optionally loads project-local helpers.
+
+Usage:
+- Shared helpers are bundled with this plugin and are available after plugin initialisation.
+- Project-local helpers are loaded from one or more paths (parameter: local_helpers_paths). If empty, defaults to:
+  - templates/{activeTemplate}/local-helpers
+  - local-helpers
+  Each path may contain vendor/autoload.php (Composer) and/or src/ (PSR-4 for Project\*).]]></description>
 	<namespace path="src">SalmutterNet\Plugin\System\Salmutterhelpers</namespace>
 	<files>
 		<folder plugin="salmutterhelpers">services</folder>
 		<folder>src</folder>
 	</files>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="local_helpers_paths"
+					type="textarea"
+					label="Local helpers paths"
+					description="Optional. One path per line (or comma separated). Relative paths are relative to JPATH_ROOT. Each path may contain vendor/autoload.php and/or src/ for Project\* classes. If empty: templates/{activeTemplate}/local-helpers and then local-helpers."
+					rows="4"
+					filter="raw"
+				/>
+			</fieldset>
+		</fields>
+	</config>
 	</extension>
