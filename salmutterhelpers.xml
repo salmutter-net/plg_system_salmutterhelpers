@@ -5,14 +5,39 @@
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<version>0.3.0</version>
-	<description><![CDATA[System plugin that provides the shared helper baseline (namespace: SalmutterNet\JoomlaHelpers) and optionally loads project-local helpers.
+	<description><![CDATA[
+<p>System plugin that provides shared Joomla helper classes under the <code>SalmutterNet\JoomlaHelpers</code> namespace and optionally loads project-local helpers.</p>
 
-Usage:
-- Shared helpers are bundled with this plugin and are available after plugin initialisation.
-- Project-local helpers are loaded from one or more paths (parameter: local_helpers_paths). If empty, defaults to:
-  - templates/{activeTemplate}/local-helpers
-  - local-helpers
-  Each path may contain vendor/autoload.php (Composer) and/or src/ (PSR-4 for Project\*).]]></description>
+<h3>Shared Helper Classes</h3>
+<p>Available immediately after plugin initialisation — no require or autoload setup needed.</p>
+<ul>
+  <li><strong>Routing</strong> — SEF URL generation for articles, categories, contacts, tags<br/>
+    <code>Routing::articleById()</code>, <code>Routing::articleByObject()</code>, <code>Routing::categoryById()</code>, <code>Routing::tagById()</code>, <code>Routing::contactById()</code>, <code>Routing::canonicalArticleUrl()</code></li>
+  <li><strong>Content</strong> — Article &amp; category getters<br/>
+    <code>Content::articleById()</code>, <code>Content::articlesByCategory()</code>, <code>Content::categoryById()</code>, <code>Content::subcategories()</code>, <code>Content::cleanImageUrl()</code></li>
+  <li><strong>Contact</strong> — Contact getters<br/>
+    <code>Contact::byId()</code>, <code>Contact::byUserId()</code>, <code>Contact::byCategory()</code></li>
+  <li><strong>Tags</strong> — Tag getters &amp; checks<br/>
+    <code>Tags::byId()</code>, <code>Tags::forArticle()</code>, <code>Tags::forCategory()</code>, <code>Tags::forContact()</code>, <code>Tags::itemHasTag()</code></li>
+  <li><strong>Fields</strong> — Custom field access<br/>
+    <code>Fields::getValue()</code>, <code>Fields::getAsArray()</code>, <code>Fields::getObject()</code>, <code>Fields::hasValue()</code></li>
+  <li><strong>Text</strong> — String &amp; HTML utilities<br/>
+    <code>Text::trimBom()</code>, <code>Text::truncateAtSpace()</code>, <code>Text::truncateHtml()</code>, <code>Text::firstParagraph()</code></li>
+</ul>
+
+<h3>Project-Local Helpers</h3>
+<p>Add project-specific classes without modifying the plugin. The plugin scans one or more paths (see parameter below) for:</p>
+<ul>
+  <li><code>vendor/autoload.php</code> — loaded if present (Composer dependencies)</li>
+  <li><code>src/</code> — PSR-4 autoloader registered for the <code>Project\</code> namespace</li>
+</ul>
+<p>Default paths (when parameter is empty):</p>
+<ol>
+  <li><code>templates/{activeTemplate}/local-helpers</code></li>
+  <li><code>local-helpers</code> (relative to JPATH_ROOT)</li>
+</ol>
+<p><strong>Example:</strong> Place a file at <code>templates/mytemplate/local-helpers/src/Helpers.php</code> with <code>namespace Project;</code> and use it as <code>Project\Helpers::myMethod()</code> in any template file.</p>
+]]></description>
 	<namespace path="src">SalmutterNet\Plugin\System\Salmutterhelpers</namespace>
 	<files>
 		<folder plugin="salmutterhelpers">services</folder>
