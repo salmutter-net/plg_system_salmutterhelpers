@@ -154,7 +154,7 @@ final class Routing
         $catId = (int) ($article->catid ?? 0);
         $language = (string) ($article->language ?? '*');
 
-        $url = rtrim(Uri::root(), '/') . Route::_(RouteHelper::getArticleRoute((string) $id, $catId, $language));
+        $url = Route::_(RouteHelper::getArticleRoute((string) $id, $catId, $language), true, Route::TLS_IGNORE, true);
 
         $urlsJson = (string) ($article->urls ?? '');
         if ($urlsJson !== '') {
@@ -213,10 +213,15 @@ final class Routing
 
                 $link = (string) ($menuItem->link ?? '');
                 if ($link !== '') {
-                    if (str_contains($link, 'option=com_content') && str_contains($link, 'view=article') && str_contains($link, 'id=' . $articleId)) {
+                    parse_str(parse_url($link, PHP_URL_QUERY) ?? '', $linkQuery);
+                    $linkOption = (string) ($linkQuery['option'] ?? '');
+                    $linkView = (string) ($linkQuery['view'] ?? '');
+                    $linkId = (int) ($linkQuery['id'] ?? 0);
+
+                    if ($linkOption === 'com_content' && $linkView === 'article' && $linkId === $articleId) {
                         return (int) ($menuItem->id ?? 0) ?: null;
                     }
-                    if (str_contains($link, 'option=com_content') && str_contains($link, 'view=category') && str_contains($link, 'id=' . $catId)) {
+                    if ($linkOption === 'com_content' && $linkView === 'category' && $linkId === $catId) {
                         return (int) ($menuItem->id ?? 0) ?: null;
                     }
                 }
