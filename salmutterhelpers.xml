@@ -4,7 +4,7 @@
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.2.1</version>
+	<version>0.3.0</version>
 	<description><![CDATA[System plugin that provides the shared helper baseline (namespace: SalmutterNet\JoomlaHelpers) and optionally loads project-local helpers.
 
 Usage:
