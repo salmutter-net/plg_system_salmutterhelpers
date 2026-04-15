@@ -4,7 +4,7 @@
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.3.0</version>
+	<version>0.3.1</version>
 	<description><![CDATA[
 <p>System plugin that provides shared Joomla helper classes under the <code>SalmutterNet\JoomlaHelpers</code> namespace and optionally loads project-local helpers.</p>
 

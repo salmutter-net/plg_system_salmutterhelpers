@@ -194,8 +194,11 @@ final class Content
             || (int) ($article->parent_id ?? 0) === $categoryId;
     }
 
-    public static function cleanImageUrl(string $value): string
+    public static function cleanImageUrl(?string $value): string
     {
+        if ($value === null) {
+            return '';
+        }
         $clean = HTMLHelper::cleanImageURL($value);
 
         return ($clean->url ?? '') !== '' ? $clean->url : '';
