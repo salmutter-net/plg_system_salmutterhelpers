@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<extension version="4" type="plugin" group="system" method="upgrade">
+<extension version="4" type="plugin" group="system" method="upgrade">
 	<name>System – Joomla Helpers Loader</name>
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.3.2</version>
+	<version>0.3.3</version>
 	<description><![CDATA[
 <p>System plugin that provides shared Joomla helper classes under the <code>SalmutterNet\JoomlaHelpers</code> namespace and optionally loads project-local helpers.</p>
 
@@ -20,7 +20,7 @@
   <li><strong>Tags</strong> — Tag getters &amp; checks<br/>
     <code>Tags::byId()</code>, <code>Tags::forArticle()</code>, <code>Tags::forCategory()</code>, <code>Tags::forContact()</code>, <code>Tags::itemHasTag()</code></li>
   <li><strong>Fields</strong> — Custom field access<br/>
-    <code>Fields::create()</code>, <code>Fields::getValue()</code>, <code>Fields::getAsArray()</code>, <code>Fields::getObject()</code>, <code>Fields::hasValue()</code></li>
+    <code>Fields::exists()</code>, <code>Fields::create()</code>, <code>Fields::getValue()</code>, <code>Fields::getAsArray()</code>, <code>Fields::getObject()</code>, <code>Fields::hasValue()</code></li>
   <li><strong>Text</strong> — String &amp; HTML utilities<br/>
     <code>Text::trimBom()</code>, <code>Text::truncateAtSpace()</code>, <code>Text::truncateHtml()</code>, <code>Text::firstParagraph()</code></li>
 </ul>
@@ -47,14 +47,14 @@
 		<fields name="params">
 			<fieldset name="basic">
 				<field
-					name="local_helpers_paths"
-					type="textarea"
-					label="Local helpers paths"
-					description="Optional. One path per line (or comma separated). Relative paths are relative to JPATH_ROOT. Each path may contain vendor/autoload.php and/or src/ for Project\* classes. If empty: templates/{activeTemplate}/local-helpers and then local-helpers."
-					rows="4"
-					filter="raw"
+						name="local_helpers_paths"
+						type="textarea"
+						label="Local helpers paths"
+						description="Optional. One path per line (or comma separated). Relative paths are relative to JPATH_ROOT. Each path may contain vendor/autoload.php and/or src/ for Project\* classes. If empty: templates/{activeTemplate}/local-helpers and then local-helpers."
+						rows="4"
+						filter="raw"
 				/>
 			</fieldset>
 		</fields>
 	</config>
-	</extension>
+</extension>

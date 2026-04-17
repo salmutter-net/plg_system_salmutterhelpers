@@ -44,20 +44,20 @@ final class Fields
      * @return int|false  The new field id on success, false on failure.
      */
     public static function create(
-        string $title,
-        string $context = self::CONTEXT_ARTICLE,
-        string $type = 'text',
-        string $name = '',
-        string $defaultValue = '',
-        string $label = '',
-        string $note = '',
-        array $fieldparams = [],
-        array $params = [],
-        int $groupId = 0,
-        int $state = 1,
-        string $language = '*',
-        int $access = 1,
-        int $ordering = 0
+    string $title,
+    string $context = self::CONTEXT_ARTICLE,
+    string $type = 'text',
+    string $name = '',
+    string $defaultValue = '',
+    string $label = '',
+    string $note = '',
+    array $fieldparams = [],
+    array $params = [],
+    int $groupId = 0,
+    int $state = 1,
+    string $language = '*',
+    int $access = 1,
+    int $ordering = 0
     ): int|false {
         $db   = Factory::getDbo();
         $date = Factory::getDate()->toSql();
@@ -66,25 +66,25 @@ final class Fields
         $fieldparamsRegistry = new Registry($fieldparams);
 
         $data = (object) [
-            'id'                => 0,
-            'title'             => $title,
-            'name'              => $name,
-            'label'             => $label !== '' ? $label : $title,
-            'default_value'     => $defaultValue,
-            'type'              => $type,
-            'note'              => $note,
-            'context'           => $context,
-            'group_id'          => $groupId,
-            'state'             => $state,
-            'ordering'          => $ordering,
-            'language'          => $language,
-            'access'            => $access,
-            'params'            => $paramsRegistry->toString(),
-            'fieldparams'       => $fieldparamsRegistry->toString(),
-            'created_time'      => $date,
-            'modified_time'     => $date,
-            'created_user_id'   => Factory::getUser()->id,
-            'modified_by'       => Factory::getUser()->id,
+        'id'                => 0,
+        'title'             => $title,
+        'name'              => $name,
+        'label'             => $label !== '' ? $label : $title,
+        'default_value'     => $defaultValue,
+        'type'              => $type,
+        'note'              => $note,
+        'context'           => $context,
+        'group_id'          => $groupId,
+        'state'             => $state,
+        'ordering'          => $ordering,
+        'language'          => $language,
+        'access'            => $access,
+        'params'            => $paramsRegistry->toString(),
+        'fieldparams'       => $fieldparamsRegistry->toString(),
+        'created_time'      => $date,
+        'modified_time'     => $date,
+        'created_user_id'   => Factory::getUser()->id,
+        'modified_by'       => Factory::getUser()->id,
         ];
 
         try {
@@ -152,6 +152,28 @@ final class Fields
     public static function hasValue(object $item, string $fieldName, string $context = 'com_content.article'): bool
     {
         return self::getValue($item, $fieldName, $context) !== false;
+    }
+
+    /**
+     * Check if a field definition exists by title and context.
+     *
+     * @param string $title   The field title (label) to search for.
+     * @param string $context One of the CONTEXT_* constants.
+     * @return int|false      The field ID if found, false otherwise.
+     */
+    public static function exists(string $title, string $context = self::CONTEXT_ARTICLE): int|false
+    {
+        $db = Factory::getDbo();
+        $query = $db->getQuery(true)
+        ->select($db->quoteName('id'))
+        ->from($db->quoteName('#__fields'))
+        ->where($db->quoteName('title') . ' = ' . $db->quote($title))
+        ->where($db->quoteName('context') . ' = ' . $db->quote($context))
+        ->where($db->quoteName('state') . ' = 1');
+
+        $id = $db->setQuery($query)->loadResult();
+
+        return $id ? (int) $id : false;
     }
 
     /**
