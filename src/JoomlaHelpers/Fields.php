@@ -12,13 +12,13 @@ final class Fields
      * Available Joomla content contexts for custom fields.
      */
     public const CONTEXT_ARTICLE          = 'com_content.article';
-    public const CONTEXT_CONTENT_CATEGORY = 'com_content.category';
+    public const CONTEXT_CONTENT_CATEGORY = 'com_content.categories';
     public const CONTEXT_CONTACT          = 'com_contact.contact';
-    public const CONTEXT_CONTACT_CATEGORY = 'com_contact.category';
+    public const CONTEXT_CONTACT_CATEGORY = 'com_contact.categories';
     public const CONTEXT_NEWSFEEDS        = 'com_newsfeeds.newsfeed';
-    public const CONTEXT_NEWSFEEDS_CATEGORY = 'com_newsfeeds.category';
+    public const CONTEXT_NEWSFEEDS_CATEGORY = 'com_newsfeeds.categories';
     public const CONTEXT_BANNER           = 'com_banners.banner';
-    public const CONTEXT_BANNER_CATEGORY  = 'com_banners.category';
+    public const CONTEXT_BANNER_CATEGORY  = 'com_banners.categories';
     public const CONTEXT_USER             = 'com_users.user';
 
     /**
