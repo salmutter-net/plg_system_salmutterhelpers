@@ -7,7 +7,7 @@
 
 namespace SalmutterNet\Plugin\System\Salmutterhelpers\Extension;
 
-use Joomla\CMS\Event\Application\AfterInitialiseEvent;
+use Joomla\CMS\Event\Application\AfterRouteEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\SubscriberInterface;
@@ -21,11 +21,11 @@ final class Salmutterhelpers extends CMSPlugin implements SubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'onAfterInitialise' => 'onAfterInitialise',
+        'onAfterRoute' => 'onAfterRoute',
         ];
     }
 
-    public function onAfterInitialise(AfterInitialiseEvent $event): void
+    public function onAfterRoute(AfterRouteEvent $event): void
     {
         static $loaded = false;
 
