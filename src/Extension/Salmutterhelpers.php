@@ -21,18 +21,48 @@ final class Salmutterhelpers extends CMSPlugin implements SubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-        'onAfterRoute' => 'onAfterRoute',
+            'onAfterInitialise' => 'onAfterInitialise',
+            'onAfterRoute'      => 'onAfterRoute',
         ];
+    }
+
+    public function onAfterInitialise(): void
+    {
+        static $sharedLoaded = false;
+
+        if ($sharedLoaded) {
+            return;
+        }
+
+        // Register shared helpers early (no template dependency)
+        $sharedPrefix = 'SalmutterNet\\JoomlaHelpers\\';
+        $sharedBaseDir = rtrim(__DIR__ . '/../JoomlaHelpers', '/\\') . DIRECTORY_SEPARATOR;
+        spl_autoload_register(static function (string $class) use ($sharedPrefix, $sharedBaseDir): void {
+            $len = strlen($sharedPrefix);
+            if (strncmp($sharedPrefix, $class, $len) !== 0) {
+                return;
+            }
+
+            $relativeClass = substr($class, $len);
+            $file = $sharedBaseDir . str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php';
+
+            if (is_file($file)) {
+                require $file;
+            }
+        });
+
+        $sharedLoaded = true;
     }
 
     public function onAfterRoute(AfterRouteEvent $event): void
     {
-        static $loaded = false;
+        static $localLoaded = false;
 
-        if ($loaded) {
+        if ($localLoaded) {
             return;
         }
 
+        // Register local helpers (needs template - safe to call getTemplate() after routing)
         $localHelpersPathsParam = (string) $this->params->get('local_helpers_paths', '');
         $localHelpersPaths = [];
 
@@ -101,22 +131,6 @@ final class Salmutterhelpers extends CMSPlugin implements SubscriberInterface
             }
         }
 
-        $sharedPrefix = 'SalmutterNet\\JoomlaHelpers\\';
-        $sharedBaseDir = rtrim(__DIR__ . '/../JoomlaHelpers', '/\\') . DIRECTORY_SEPARATOR;
-        spl_autoload_register(static function (string $class) use ($sharedPrefix, $sharedBaseDir): void {
-            $len = strlen($sharedPrefix);
-            if (strncmp($sharedPrefix, $class, $len) !== 0) {
-                return;
-            }
-
-            $relativeClass = substr($class, $len);
-            $file = $sharedBaseDir . str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php';
-
-            if (is_file($file)) {
-                require $file;
-            }
-        });
-
-        $loaded = true;
+        $localLoaded = true;
     }
 }
