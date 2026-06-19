@@ -204,6 +204,73 @@ final class Content
         return ($clean->url ?? '') !== '' ? $clean->url : '';
     }
 
+    /**
+     * Wraps {loadposition}, {loadmodule}, and {loadmoduleid} tags with closing/reopening
+     * DOM elements so injected modules can break out of a nested wrapper structure.
+     *
+     * Each entry in $wrappers defines one nesting level:
+     *   ['tag' => 'div', 'class' => 'article-body']   → <div class="article-body">
+     *   ['tag' => 'div']                               → <div>
+     *
+     * The closing side is generated automatically from the same list (innermost first).
+     *
+     * Example — two-level wrapper matching firstoptiker26 article layout:
+     *   Content::breakBodyText($text, [
+     *       ['tag' => 'div', 'class' => 'article-body'],
+     *       ['tag' => 'div', 'class' => 'bodytext'],
+     *   ]);
+     *
+     * Example — single wrapper (e.g. category description):
+     *   Content::breakBodyText($text, [
+     *       ['tag' => 'div', 'class' => 'category__description'],
+     *   ]);
+     *
+     * @param string                          $text     Article/category text to process.
+     * @param array<array{tag:string,class?:string}> $wrappers Ordered list of wrapper elements (outermost first).
+     */
+    public static function breakBodyText(string $text, array $wrappers = [
+        ['tag' => 'div', 'class' => 'article-body'],
+        ['tag' => 'div', 'class' => 'bodytext'],
+    ]): string
+    {
+        if ($wrappers === []) {
+            return $text;
+        }
+
+        // Build the closing fragment (innermost element first)
+        $closing = '';
+        foreach (array_reverse($wrappers) as $w) {
+            $closing .= '</' . htmlspecialchars($w['tag'], ENT_QUOTES) . '>';
+        }
+
+        // Build the reopening fragment (outermost element first)
+        $reopening = '';
+        foreach ($wrappers as $w) {
+            $tag   = htmlspecialchars($w['tag'], ENT_QUOTES);
+            $class = isset($w['class']) && $w['class'] !== '' ? ' class="' . htmlspecialchars($w['class'], ENT_QUOTES) . '"' : '';
+            $reopening .= '<' . $tag . $class . '>';
+        }
+
+        $patterns = [
+            '{loadposition '  => '/{loadposition\s(.*?)}/i',
+            '{loadmodule '    => '/{loadmodule\s(.*?)}/i',
+            '{loadmoduleid '  => '/{loadmoduleid\s([1-9][0-9]*)}/i',
+        ];
+
+        foreach ($patterns as $needle => $pattern) {
+            if (!str_contains($text, $needle)) {
+                continue;
+            }
+            preg_match_all($pattern, $text, $matches, PREG_SET_ORDER);
+            foreach ($matches as $match) {
+                $replacement = $closing . trim($match[0]) . $reopening;
+                $text = substr_replace($text, $replacement, strpos($text, $match[0]), strlen($match[0]));
+            }
+        }
+
+        return $text;
+    }
+
     private static function db(): DatabaseInterface
     {
         return Factory::getContainer()->get(DatabaseInterface::class);

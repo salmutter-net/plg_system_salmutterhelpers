@@ -4,7 +4,7 @@
 	<author>salmutter.net</author>
 	<creationDate>2026-04</creationDate>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-	<version>0.5.0</version>
+	<version>0.6.0</version>
 	<description><![CDATA[
 <p>System plugin that provides shared Joomla helper classes under the <code>SalmutterNet\JoomlaHelpers</code> namespace and optionally loads project-local helpers.</p>
 
@@ -14,7 +14,7 @@
   <li><strong>Routing</strong> — SEF URL generation for articles, categories, contacts, tags<br/>
     <code>Routing::articleById()</code>, <code>Routing::articleByObject()</code>, <code>Routing::categoryById()</code>, <code>Routing::tagById()</code>, <code>Routing::contactById()</code>, <code>Routing::canonicalArticleUrl()</code></li>
   <li><strong>Content</strong> — Article &amp; category getters<br/>
-    <code>Content::articleById()</code>, <code>Content::articlesByCategory()</code>, <code>Content::categoryById()</code>, <code>Content::subcategories()</code>, <code>Content::cleanImageUrl()</code></li>
+    <code>Content::articleById()</code>, <code>Content::articlesByCategory()</code>, <code>Content::categoryById()</code>, <code>Content::subcategories()</code>, <code>Content::cleanImageUrl()</code>, <code>Content::breakBodyText()</code></li>
   <li><strong>Contact</strong> — Contact getters<br/>
     <code>Contact::byId()</code>, <code>Contact::byUserId()</code>, <code>Contact::byCategory()</code></li>
   <li><strong>Tags</strong> — Tag getters &amp; checks<br/>
