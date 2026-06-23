@@ -62,6 +62,10 @@ final class Fields
         $db   = Factory::getDbo();
         $date = Factory::getDate()->toSql();
 
+        if ($type === 'editor' && !isset($params['filter'])) {
+            $params['filter'] = 'safehtml';
+        }
+
         $paramsRegistry      = new Registry($params);
         $fieldparamsRegistry = new Registry($fieldparams);
 
