@@ -73,12 +73,14 @@ final class Fields
         'default_value'     => $defaultValue,
         'type'              => $type,
         'note'              => $note,
+        'description'       => '',
         'context'           => $context,
         'group_id'          => $groupId,
         'state'             => $state,
         'ordering'          => $ordering,
         'language'          => $language,
         'access'            => $access,
+        'assigned_cat_ids'  => '',
         'params'            => $paramsRegistry->toString(),
         'fieldparams'       => $fieldparamsRegistry->toString(),
         'created_time'      => $date,
@@ -168,6 +170,28 @@ final class Fields
         ->select($db->quoteName('id'))
         ->from($db->quoteName('#__fields'))
         ->where($db->quoteName('title') . ' = ' . $db->quote($title))
+        ->where($db->quoteName('context') . ' = ' . $db->quote($context))
+        ->where($db->quoteName('state') . ' = 1');
+
+        $id = $db->setQuery($query)->loadResult();
+
+        return $id ? (int) $id : false;
+    }
+
+    /**
+     * Check if a field definition exists by machine name and context.
+     *
+     * @param string $name    The URL-safe field name to search for.
+     * @param string $context One of the CONTEXT_* constants.
+     * @return int|false      The field ID if found, false otherwise.
+     */
+    public static function existsByName(string $name, string $context = self::CONTEXT_ARTICLE): int|false
+    {
+        $db = Factory::getDbo();
+        $query = $db->getQuery(true)
+        ->select($db->quoteName('id'))
+        ->from($db->quoteName('#__fields'))
+        ->where($db->quoteName('name') . ' = ' . $db->quote($name))
         ->where($db->quoteName('context') . ' = ' . $db->quote($context))
         ->where($db->quoteName('state') . ' = 1');
 
