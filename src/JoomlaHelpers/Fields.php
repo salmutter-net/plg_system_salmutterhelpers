@@ -2,8 +2,10 @@
 
 namespace SalmutterNet\JoomlaHelpers;
 
+use Joomla\CMS\Access\Rules;
 use Joomla\CMS\Factory;
 use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
+use Joomla\Component\Fields\Administrator\Table\FieldTable;
 use Joomla\Registry\Registry;
 
 final class Fields
@@ -40,6 +42,11 @@ final class Fields
      * @param string $language      Language tag, e.g. '*', 'en-GB'.
      * @param int    $access        Joomla access level id; 1 = public.
      * @param int    $ordering      Ordering position within the group/context.
+     * @param array  $rules         Optional ACL rules. Default Joomla user group IDs:
+     *                              1 = Public, 2 = Registered, 3 = Author, 4 = Editor,
+     *                              5 = Publisher, 6 = Manager, 7 = Administrator, 8 = Super Users.
+     *                              If empty, Administrator (7) and Super Users (8) get core.edit
+     *                              and core.edit.value.
      *
      * @return int|false  The new field id on success, false on failure.
      */
@@ -57,7 +64,8 @@ final class Fields
     int $state = 1,
     string $language = '*',
     int $access = 1,
-    int $ordering = 0
+    int $ordering = 0,
+    array $rules = []
     ): int|false {
         $db   = Factory::getDbo();
         $date = Factory::getDate()->toSql();
@@ -99,9 +107,49 @@ final class Fields
             return false;
         }
 
-        return (int) $data->id > 0 ? (int) $data->id : false;
+        if ((int) $data->id > 0) {
+            self::createFieldAsset((int) $data->id, $rules);
+
+            return (int) $data->id;
+        }
+
+        return false;
     }
 
+
+    /**
+     * Create the asset for a newly inserted field and set administrator rights.
+     *
+     * @param int   $fieldId  The new field id.
+     * @param array $rules    Optional ACL rules. Default Joomla user group IDs:
+     *                        1 = Public, 2 = Registered, 3 = Author, 4 = Editor,
+     *                        5 = Publisher, 6 = Manager, 7 = Administrator, 8 = Super Users.
+     *                        If empty, Administrator (7) and Super Users (8) get core.edit
+     *                        and core.edit.value.
+     *
+     * @return bool
+     */
+    private static function createFieldAsset(int $fieldId, array $rules = []): bool
+    {
+        try {
+            $fieldTable = new FieldTable(Factory::getDbo());
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        if (!$fieldTable->load($fieldId)) {
+            return false;
+        }
+
+        $rules = $rules ?: [
+            'core.edit'       => ['7' => 1, '8' => 1],
+            'core.edit.value' => ['7' => 1, '8' => 1],
+        ];
+
+        $fieldTable->setRules(new Rules($rules));
+
+        return $fieldTable->store(true);
+    }
 
     /**
      * Get the raw value of a custom field.
